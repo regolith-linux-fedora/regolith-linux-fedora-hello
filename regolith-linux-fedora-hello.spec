@@ -21,6 +21,13 @@ workflows can build, publish and install something without real packaging work.
 %install
 install -Dpm 0755 %{name} %{buildroot}%{_bindir}/%{name}
 
+%check
+# Deliberate Rawhide-only failure: checks that a Canary Target failure only warns (Fedora Task 01-04)
+%if 0%{?fedora} >= 46
+echo "deliberate Rawhide-only failure"
+exit 1
+%endif
+
 %files
 %{_bindir}/%{name}
 
