@@ -1,0 +1,23 @@
+# One-off cleanup after the Fedora Task 01-04 end-to-end test: remove this
+# throwaway package (and all its builds) from @regolith/regolith-unstable.
+name: Delete from COPR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  delete:
+    runs-on: ubuntu-24.04
+    container: fedora:43
+    steps:
+      - name: Install copr-cli
+        run: dnf -y install copr-cli
+
+      - name: Delete the package
+        env:
+          COPR_CONFIG: "${{ secrets.COPR_CONFIG }}"
+        run: |
+          mkdir -p ~/.config
+          echo "$COPR_CONFIG" > ~/.config/copr
+          chmod 600 ~/.config/copr
+          copr-cli delete-package @regolith/regolith-unstable --name regolith-linux-fedora-hello
